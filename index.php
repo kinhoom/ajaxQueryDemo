@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>test</title>
-	<script src="jquery.js"></script>
+	<script src="jquery.js" type="text/javascript"></script>
 	<script>
 		$(function(){
 			$('#search').bind('keyup',function(){
