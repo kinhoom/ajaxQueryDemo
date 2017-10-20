@@ -49,12 +49,12 @@
 			background-color: #ccc;
 			color:#fff;
 		}
-		#s1{
+		.s1{
 			font-size:6px;
 			float:right;
 			color:#ccc;
 		}
-		#s1:hover{
+		.s1:hover{
 			color:#fff;
 			text-decoration: underline;
 			cursor:default;
@@ -63,12 +63,8 @@
 	<script src="jquery.js" type="text/javascript"></script>
 	<script>
 		$(function(){
-			$('span[id=s1]').on('click',function(){
-				$.post('handle.php',{value:$(this).attr('value'),type:'cdel'},function(data){
-						$('#d1').html(data);
-			    });	
-			});
-			$("#search").on('mousedown',function(){
+
+			$("#container").on('mousedown',function(){
 				$.post('handle.php',{value:'getNum'},function(data){
 					if(data==0){
 						$('#d1').css('display','none');
@@ -77,23 +73,32 @@
 					}
 					
 				});
-
-			$("#container").on('mousedown',function(){
-				$('#d1').css('display','block');
-			})
-			$("div").bind('mousedown',function(){
+			});
+			$('div').not('#container').on('mousedown',function(){
 				$('#d1').css('display','none');
-				$('#d1').bind('mousedown',function(){
-					$('#d1').css('display','block');
+				
+			});
+			$('#d1').on('mousedown',function(){
+				$(this).css('display','block');
+			})
+			$('#d1').on('click','.s1',function(){
+				// alert(3);
+				textval=$('#search').val();
+				$.post('handle.php',{value:$(this).attr('value'),tv:textval,type:'cdel'},function(data){
+					data ? $('#d1').html(data) : $('#d1').css('display','none');
+			    });	
+			});
+			$('span[value=all]').live('click',function(){
+				val=$(this).attr('value');
+				$.post('handle.php',{value:val},function(data){
+					if(data!=''){
+						$('#d1').css('display','block');
+						$('#d1').html(data);
+					}else{
+						$('#d1').css('display','none');
+					}
 				})
 			})
-			// $("#search").on('blur',function(){
-			// 	$('#d1').on('click',function(){
-			// 		$('#d1').css('display','block');
-			// 	})
-
-			// })
-
 			$('#search').bind('keyup',function(){
 				val=$(this).val();
 				$.post('handle.php',{value:val},function(data){
@@ -105,18 +110,35 @@
 					}
 				})
 			})
-			$('span').bind('click',function(){
-				val=$(this).attr('value');
-				$.post('handle.php',{value:val},function(data){
-					if(data!=''){
-						$('#d1').css('display','block');
-						$('#d1').html(data);
-					}else{
-						$('#d1').css('display','none');
-					}
-				})
-			})
-		});
+			// $("#container").on('mousedown',function(){
+			// 	$('#d1').css('display','block');
+			// })
+		// 	$("div").bind('mousedown',function(){
+		// 		$('#d1').css('display','none');
+		// 		$('#d1').bind('mousedown',function(){
+		// 			$('#d1').css('display','block');
+		// 		})
+		// 	})
+		// 	// $("#search").on('blur',function(){
+		// 	// 	$('#d1').on('click',function(){
+		// 	// 		$('#d1').css('display','block');
+		// 	// 	})
+
+		// 	// })
+
+			
+		// 	$('span').bind('click',function(){
+				// val=$(this).attr('value');
+				// $.post('handle.php',{value:val},function(data){
+				// 	if(data!=''){
+				// 		$('#d1').css('display','block');
+				// 		$('#d1').html(data);
+				// 	}else{
+				// 		$('#d1').css('display','none');
+				// 	}
+				// })
+			// })
+		// });
 		});
 	</script>
 </head>
@@ -135,7 +157,7 @@
 		while($ret=mysql_fetch_assoc($res)){
 			echo "<li><a href='{$ret[url]}'>{$ret['id']}&nbsp;&nbsp;";
 			echo "{$ret['name']}&nbsp;&nbsp;";
-			echo "{$ret['pass']}</a><span id=s1 value='{$ret[id]}'>删除</span></li>";
+			echo "{$ret['pass']}</a><span class=s1 value='{$ret[id]}'>删除</span></li>";
 		}
 		if($num){
 			echo "<div style='text-align:right;font-size:5px;color:#999;cursor:default;'><span value='all'>清除历史记录</span></div>";
@@ -143,6 +165,7 @@
 		echo "</ul>";
 		echo "</div>";
 	?>
+
 	<div id="con"></div>
 </body>
 </html>
